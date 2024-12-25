@@ -19,11 +19,21 @@ export default function BlogPage() {
 
       // if filter by category
       if (selectedCategory) {
-        url += `$category="${selectedCategory}`;
+        url += `&category=${selectedCategory}`; // Fixed the query parameter format
       }
-      const response = await fetch(url);
-      const data = await response.json();
-      setBlogs(data);
+
+      try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`Error fetching data: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setBlogs(data);
+      } catch (error) {
+        console.error(error); // Log the error if the fetch fails
+      }
     }
     fetchBlogs();
   }, [currentPage, pageSize, selectedCategory]);
